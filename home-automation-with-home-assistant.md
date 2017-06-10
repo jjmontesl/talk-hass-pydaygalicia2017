@@ -176,12 +176,15 @@ switch:
   platform: command_line
   switches:
     kitchen_light:
-      command_on: switch_command on kitchen
-      command_off: switch_command off kitchen
+      command_on: touch /tmp/kitchen_light
+      command_off: rm /tmp/kitchen_light
 
 sensor:
   - platform: command_line
-    command: SENSOR_COMMAND
+    name: CPU Temp
+    command: "/bin/cat /sys/class/thermal/thermal_zone1/temp"
+    unit_of_measurement: "ºC"
+    value_template: '{{ value | multiply(0.001) }}'
 ```
 </div>
 
@@ -190,9 +193,34 @@ sensor:
 You can split configuration per *platform* (switches, lights,  zones...).
 However, using packages is recommended.
 
-## More: Media Players, TVs...
+<div style="font-size: 75%;">
+```yaml
+  packages:
+    devices: !include packages/devices.yaml
+    media: !include packages/media.yaml
+    tracking: !include packages/tracking.yaml
+    ...
+```
+</div>
+
+## Media Players, TVs...
+
+Many players and TVs are supported.
+
+<div style="font-size: 75%;">
+```yaml
+media_player:
+  - platform: clementine
+    host: 127.0.0.1
+```
+</div>
 
 ## Grouping and presentation
+
+* Each group is presented as a panel in the UI.
+* A group can be used as view using `view: True`.
+* Default view can be overrided declaring a view with name `default_view`.
+* Items not included in any group are shown in the default view.
 
 # Automation
 
@@ -243,7 +271,7 @@ Ingredients of a HASS automation:
 
 ## Deployment Options (on rPi)
 
-Some systems already include OpenZWave, \
+Some options already include OpenZWave, \
 MQTT Broker ([Mosquitto](https://mosquitto.org/)), HDMI-CEC for Raspberry Pi.
 
 - Raspbian all-in-one ([fabric](http://www.fabfile.org/))
@@ -261,7 +289,7 @@ MQTT Broker ([Mosquitto](https://mosquitto.org/)), HDMI-CEC for Raspberry Pi.
 
 ## Custom components
 
-Asd
+
 
 
 # Final words...
@@ -281,8 +309,7 @@ Pros:
 Gotchas:
 
 * 3 configuration styles (per item, per platform, per package).
-* Confusing typing of variables and states.
-* Code is partly object oriented, config is platform oriented.
+* Different typing of variables and states.
 * Components inconsistent behavior, may cause race conditions.
 * API and config is still changing.
 
