@@ -1,0 +1,19 @@
+# System HASS Module
+#
+# Home devices
+
+switch:
+  platform: command_line
+  name: Kitchen light
+  switches:
+    kitchen_light:
+      command_on: touch /tmp/kitchen_light
+      command_off: rm /tmp/kitchen_light
+      command_state: test -f /tmp/kitchen_light
+
+sensor:
+  - platform: command_line
+    name: CPU Temp
+    command: "/bin/cat /sys/class/thermal/thermal_zone1/temp"
+    unit_of_measurement: "ºC"
+    value_template: '{{ value | multiply(0.001) }}'

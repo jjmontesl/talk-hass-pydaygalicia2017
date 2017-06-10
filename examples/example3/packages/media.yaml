@@ -4,5 +4,3 @@ media_player:
   - platform: clementine
     host: !secret laptop_ip
 
-
-
